@@ -1,0 +1,50 @@
+
+<project name="car-hw03-ivy" basedir="."  default="clean" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property name="src" location="src" />
+	<property name="bin" location="bin" />
+	<property name="ivy.lib" value="lib"/>
+	
+	<path id="classpath">
+		<pathelement location="${bin}" />
+		<fileset dir="${ivy.lib}"/>
+	</path>
+	
+	<target name="init">
+		<mkdir dir="${bin}"/>
+		<mkdir dir="${ivy.lib}"/>
+		
+	</target>
+	
+	<target name="resolve" depends="init"
+			description="--> Download JAR files (listed in ivy.xml) to the 'lib' directory.">
+		<ivy:retrieve/>
+	</target>
+	
+	<target name="compile" depends="resolve">
+		<javac srcdir="${src}" destdir="${bin}" includeAntRuntime="no">
+			<classpath refid="classpath"/>
+			<include name="edu/umb/cs681/hw03/*.java"/>
+			
+		</javac>
+	</target>
+
+	<target name="test" depends="compile">
+	</target>
+	
+	<target name="run" depends="test">
+		<java classname="edu.umb.cs681.hw03.CarTest"
+				classpathref="classpath"  
+				fork="true"/>
+	</target>
+	
+	<target name="clean" depends="run">
+		<delete includeemptydirs="true">
+			<fileset dir="${bin}/edu/umb/cs681/hw03" includes="**/*"/>
+		</delete>
+	</target>
+	
+  <target name="clean-cache" 
+  		description="--> clean the ivy cache (by default ~/.ivy2/cache)">
+      <ivy:cleancache/>
+  </target>
+</project>
